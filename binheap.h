@@ -64,7 +64,6 @@ struct BinHeap {
     // Anfang der Wurzelliste (Nullzeiger bei einer leeren Halde).
     Node* head;
 
-
     // Initialisierung als leere Halde.
     BinHeap (): head(nullptr) {}
 
@@ -85,23 +84,50 @@ struct BinHeap {
     //Hilfsoperation zum EinfÃ¼gen eines neuen Eintrags in die Halde.
     //Zusammenfassen zweier Bäume B1 und B2 mit Grad k
     //zu einem Baum mit Grad k + 1
-    Entry* combine(Entry* B1, Entry* B2){
+    Entry* combine(Entry* B1, Entry* B2) {
         B2->sibling = nullptr;
         B2->degree = B1->degree + 1;
         B1->parent = B2;
-        if(B2->child == nullptr) {
+        if (B2->child == nullptr) {
             B2->child = B1->sibling = B1;
-        }else{
+        } else {
             B1->sibling = B2->child->sibling;
             B2->child = B2->child->sibling = B1;
         }
+        return B2;
     }
 
+    //Vereinigen Operation zweier Halden H1 und H2 zu einer neuen Halde H
+    //Erstelle einen leeren Zwischenspeicher für bis zu drei Bäume.
+    Entry* Vereinigen(BinHeap<P,D> H1, BinHeap<P,D> H2){
+        int zwspeicher[3];
+        int k = 0;
+        Entry* H = nullptr;
+        Entry* B1 = H1.head;
+        Entry* B2 = H2.head;
+        //Solange H1 oder H2 oder der Zwischenspeicher nicht leer sind:
+        while(B1->head != nullptr || B2->head != nullptr){
+            if(B1->degree == k){
+                zwspeicher[k] = B1->degree;
+                B1 = B1->sibling;
+            }
+            if(B2->degree == k){
+                zwspeicher[k] = B2->degree;
+                B2 = B2->sibling;
+            }
+        }
+    }
 
-    // Neuen Eintrag mit PrioritÃ¤t p und zusÃ¤tzlichen Daten d erzeugen,
-    // zur Halde hinzufÃ¼gen und zurÃ¼ckliefern.
+    // Neuen Eintrag mit Priorität p und zusätzlichen Daten d erzeugen,
+    // zur Halde hinzufügen und zurückliefern.
+    //Erzeuge eine temporäre Halde mit einem einzigen Baum mit Grad 0, die das Objekt
+    //enthält, und vereinige sie mit der aktuellen Halde.
     Entry* insert (P p, D d){
-
+        Entry* e = new Entry(p, d);
+        BinHeap<P,D> H1;
+        H1.head = new Node(e);
+        Vereinigen(H1, *this);
+        return e;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern.
@@ -140,6 +166,8 @@ struct BinHeap {
 
     // Inhalt der Halde zu Testzwecken ausgeben.
     void dump (){
-
+        for (Node* n = head; n != nullptr; n = n->sibling)
+            std::cout << n->entry->prio << " ";
+        std::cout << std::endl;
     }
 };

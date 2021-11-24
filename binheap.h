@@ -70,12 +70,16 @@ struct BinHeap {
 
     // Ist die Halde momentan leer?
     bool isEmpty (){
-
+        return head == nullptr;
     }
 
     // GrÃ¶ÃŸe der Halde, d. h. Anzahl momentan gespeicherter EintrÃ¤ge
     // liefern.
     uint size (){
+        uint s = 0;
+        for (Node* n = head; n != nullptr; n = n->sibling)
+            ++s;
+        return s;
     }
 
     // Neuen Eintrag mit PrioritÃ¤t p und zusÃ¤tzlichen Daten d erzeugen,

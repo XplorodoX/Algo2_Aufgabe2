@@ -82,6 +82,22 @@ struct BinHeap {
         return s;
     }
 
+    //Hilfsoperation zum EinfÃ¼gen eines neuen Eintrags in die Halde.
+    //Zusammenfassen zweier Bäume B1 und B2 mit Grad k
+    //zu einem Baum mit Grad k + 1
+    Entry* combine(Entry* B1, Entry* B2){
+        B2->sibling = nullptr;
+        B2->degree = B1->degree + 1;
+        B1->parent = B2;
+        if(B2->child == nullptr) {
+            B2->child = B1->sibling = B1;
+        }else{
+            B1->sibling = B2->child->sibling;
+            B2->child = B2->child->sibling = B1;
+        }
+    }
+
+
     // Neuen Eintrag mit PrioritÃ¤t p und zusÃ¤tzlichen Daten d erzeugen,
     // zur Halde hinzufÃ¼gen und zurÃ¼ckliefern.
     Entry* insert (P p, D d){

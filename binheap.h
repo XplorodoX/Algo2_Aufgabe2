@@ -123,7 +123,7 @@ struct BinHeap {
         Node* B2 = H2.head;
         //ein array zum zwischenspeichern von maximalen 3 Bäumen
         Node *array[3] = {nullptr, nullptr, nullptr};
-        while(H1.head != nullptr || H2.head != nullptr || array[0] != nullptr || array[1] != nullptr || array[3] != nullptr){
+        while(B1 != nullptr || B2 != nullptr || array[0] != nullptr || array[1] != nullptr || array[3] != nullptr){
             if(B1 != nullptr && B1->degree == k){
                 array[i] = B1;
                 B1 = B1->sibling;

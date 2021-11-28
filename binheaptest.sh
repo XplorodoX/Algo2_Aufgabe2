@@ -1,4 +1,4 @@
-g++ -o binheaptest binheaptest.cxx
+g++ -o main main.cpp
 
 cat <<- END > binheaptest.in
 	+ a

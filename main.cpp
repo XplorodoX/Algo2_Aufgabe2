@@ -14,6 +14,8 @@ int main (int argc, char** argv) {
     // Typs int.
     // (Die Implementierung muss aber natÃ¼rlich auch mit anderen
     // Typen funktionieren.)
+    // Der Kleiner-Operator fÃ¼r string implementiert einen
+    // lexikographischen Vergleich.
     BinHeap<string, int> heap;
 
     // Feld mit allen eingefÃ¼gten EintrÃ¤gen, damit sie spÃ¤ter

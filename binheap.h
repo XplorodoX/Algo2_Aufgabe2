@@ -88,17 +88,28 @@ struct BinHeap {
     //Andernfalls mache B2 zum Nachfolger mit dem größten Grad von B1
 
     Node* hilfsoperation(Node* B1, Node* B2, uint k){
-        if(B2->entry->prio < B1->entry->prio){
-            B1->sibling = B2;
-            B2->parent = B1;
-            B2->degree = k + 1;
-            return B1;
-        }
-        else{
-            B2->sibling = B1;
-            B1->parent = B2;
-            B1->degree = k + 1;
-            return B2;
+        if(B1->degree == B2->degree){
+            if(B1->entry->prio > B2->entry->prio){
+                B2->sibling = nullptr;
+                B2->degree = B2->degree + 1;
+                B1->parent =  B2;
+                if (B2->child == nullptr){
+                    B2->child = B1->sibling = B1;
+                } else{
+                    B1->sibling = B2->child->sibling;
+                    B2->child = B2->child->sibling = B1;
+                }
+            }else{
+                B1->sibling = nullptr;
+                B1->degree = B1->degree + 1;
+                B2->parent =  B1;
+                if (B1->child == nullptr){
+                    B1->child = B2->sibling = B2;
+                } else{
+                    B2->sibling = B1->child->sibling;
+                    B1->child = B1->child->sibling = B2;
+                }
+            }
         }
     }
 
@@ -137,8 +148,12 @@ struct BinHeap {
                 B2 = B2->sibling;
                 i++;
             }
-            else{
+            else {
                 B2 = nullptr;
+            }
+            if(i == 1){
+                array[0] = hilfsoperation(array[i], H, k);
+                i = 0;
             }
             k++;
         }

@@ -76,9 +76,8 @@ struct BinHeap {
     // liefern.
     uint size () {
         uint s = 0;
-        for (Node *n = head; n != nullptr; n = n->child){
+        for (Node* n = head; n != nullptr; n = n->sibling)
             ++s;
-        }
         return s;
     }
 
@@ -115,45 +114,49 @@ struct BinHeap {
         //ein array zum zwischenspeichern von maximalen 3 Bäumen
         Node *zwischenspeicher[4] = {nullptr, nullptr, nullptr};
         while (B1 != nullptr || B2 != nullptr || zwischenspeicher[0] != nullptr || zwischenspeicher[1] != nullptr || zwischenspeicher[2] != nullptr) {
-            if(B1 != nullptr && B1->degree == k ){
+            if (B1 != nullptr && B1->degree == k) {
                 zwischenspeicher[0] = B1;
                 B1 = B1->sibling;
                 anzahlBaum++;
-            }else{
+            } else {
                 B1 = nullptr;
             }
-            if(B2 != nullptr && B2->degree == k ){
+            if (B2 != nullptr && B2->degree == k) {
                 zwischenspeicher[1] = B2;
                 B2 = B2->sibling;
                 anzahlBaum++;
-            }else {
+            } else if (B2 == nullptr) {
                 B2 = nullptr;
             }
-
+            //Wenn der Zwischenspeicher jetzt einen oder drei Bäume enthält,
+            //entnimm einen von ihnen und füge ihn am Ende von H an.
             if (anzahlBaum == 3 || anzahlBaum == 1) {
-                if (zwischenspeicher[0] != nullptr && k == H->degree) {
-                    H. = zwischenspeicher[0];
-                    H->degree = k;
-                    zwischenspeicher[0] = nullptr;
-                } else if (zwischenspeicher[1] != nullptr) {
+                if (H == nullptr && zwischenspeicher[0] != nullptr) {
+                    H = zwischenspeicher[0];
+                }else if (H == nullptr && zwischenspeicher[1] != nullptr){
                     H = zwischenspeicher[1];
-                    zwischenspeicher[1] = nullptr;
-                } else{
+                }else if (H == nullptr && zwischenspeicher[2] != nullptr){
                     H = zwischenspeicher[2];
-                    zwischenspeicher[2] = nullptr;
+                }else if (H->sibling == nullptr && zwischenspeicher[0] != nullptr) {
+                    H->sibling = zwischenspeicher[0];
+                    H->degree++;
+                }else if (H->sibling == nullptr && zwischenspeicher[1] != nullptr) {
+                    H->sibling = zwischenspeicher[1];
+                    H->degree++;
+                }else if (H->sibling == nullptr && zwischenspeicher[2] != nullptr) {
+                    H->sibling = zwischenspeicher[2];
+                    H->degree++;
                 }
-
+                zwischenspeicher[0] = zwischenspeicher[1] = zwischenspeicher[2] = nullptr;
+                anzahlBaum = 0;
             }else if (anzahlBaum == 2) {
                 if (zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr) {
                     zwischenspeicher[2] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
                     zwischenspeicher[0] = zwischenspeicher[1] = nullptr;
                     anzahlBaum = 1;
-                    k++;
-                    continue;
                 }
             }
             k++;
-            anzahlBaum = 0;
         }
         this->head = H;
     }

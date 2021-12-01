@@ -214,6 +214,15 @@ struct BinHeap {
 
     // Inhalt der aktuellen Halde zu ausgeben.
     void dump (){
+        if (head == nullptr) {
+            cout << "Halde ist leer" << endl;
+        } else {
+            Node* temp = head;
+            while (temp != nullptr) {
+                cout << temp->entry->prio << " " << temp->entry->data << endl;
+                temp = temp->sibling;
+            }
+        }
 
     }
 };

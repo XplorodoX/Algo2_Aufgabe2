@@ -87,8 +87,7 @@ struct BinHeap {
     //von B2 ist, mache B1 zum Nachfolger mit dem größten Grad von B2:
     //Andernfalls mache B2 zum Nachfolger mit dem größten Grad von B1
 
-    Node* hilfsoperation(Node* B1, Node* B2, uint k){
-        if(B1->degree == B2->degree){
+    Entry* hilfsoperation(Node* B1, Node* B2){
             if(B1->entry->prio > B2->entry->prio){
                 B2->sibling = nullptr;
                 B2->degree = B2->degree + 1;
@@ -110,7 +109,7 @@ struct BinHeap {
                     B1->child = B1->child->sibling = B2;
                 }
             }
-        }
+
     }
 
     //Vereinigen zweier Halden H1 und H2 zu einer neuen Halde H
@@ -133,10 +132,10 @@ struct BinHeap {
         Node* B1 = H1.head;
         Node* B2 = H2.head;
         //ein array zum zwischenspeichern von maximalen 3 Bäumen
-        Node *array[3] = {nullptr, nullptr, nullptr};
-        while(B1 != nullptr || B2 != nullptr || array[0] != nullptr || array[1] != nullptr || array[2] != nullptr){
+        Node *zwischenspeicher[4] = {nullptr, nullptr, nullptr};
+        while(B1 != nullptr || B2 != nullptr || zwischenspeicher[0] != nullptr || zwischenspeicher[1] != nullptr || zwischenspeicher[2] != nullptr){
             if(B1 != nullptr && B1->degree == k){
-                array[i] = B1;
+                zwischenspeicher[i] = B1;
                 B1 = B1->sibling;
                 i++;
             }
@@ -144,19 +143,42 @@ struct BinHeap {
                 B1 = nullptr;
             }
             if(B2 != nullptr && B2->degree == k){
-                array[i] = B2;
+                zwischenspeicher[i] = B2;
                 B2 = B2->sibling;
                 i++;
             }
             else {
                 B2 = nullptr;
             }
-            if(i == 1){
-                array[0] = hilfsoperation(array[i], H, k);
-                i = 0;
+            //Wenn der Zwischenspeicher jetzt einen oder drei Bäume enthält,
+            //entnimm einen von ihnen und füge ihn am Ende von H an.
+            if(i == 1 || i == 3){
+                if(zwischenspeicher[0] != nullptr){
+                    if(H == nullptr){
+                        H = zwischenspeicher[0];
+                    }
+                    else{
+                        H->sibling = zwischenspeicher[0];
+                        H = H->sibling;
+                    }
+                    zwischenspeicher[0] = nullptr;
+                }
             }
+                //Wenn der Zwischenspeicher jetzt noch zwei Bäume enthält,
+                //fasse sie zu einem Baum mit Grad k + 1 zusammen,
+                //der als „Übertrag“ für den nächsten Schritt im Zwischenspeicher verbleibt.
+            else if(i == 2){
+                if(zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr){
+                    hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
+                    zwischenspeicher[0] = nullptr;
+                    zwischenspeicher[1] = nullptr;
+                }
+            }
+            //Erhöhe k um 1.
             k++;
+            i = 0;
         }
+        this->head = H;
     }
 
     // Neuen Eintrag mit Priorität p und zusätzlichen Daten d erzeugen,
@@ -164,11 +186,11 @@ struct BinHeap {
     //Erzeuge eine temporäre Halde mit einem einzigen Baum mit Grad 0, die das Objekt
     //enthält, und vereinige sie mit der aktuellen Halde.
     Entry* insert (P p, D d){
-        Entry* e = new Entry(p, d);
-        BinHeap<P,D> H;
-        H.head = new Node(e);
-        merge(H, *this);
-        return e;
+        BinHeap<P,D> H1;
+        Entry* e = new Entry(p,d);
+        H1.head = new Node(e);
+        merge(H1, *this);
+        return H1.head->entry;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern.
@@ -209,10 +231,8 @@ struct BinHeap {
 
     }
 
-    // Inhalt der Halde zu Testzwecken ausgeben.
+    // Inhalt der Halde zu Testzwecken ausgeben rekusiv.
     void dump (){
-        for (Node* n = head; n != nullptr; n = n->sibling)
-            std::cout << n->entry->prio << " ";
-        std::cout << std::endl;
+
     }
 };

@@ -72,20 +72,15 @@ struct BinHeap {
         return head == nullptr;
     }
 
-    // GrÃ¶ÃŸe der Halde, d. h. Anzahl momentan gespeicherter EintrÃ¤ge
+    // die Anzahl der momentan gespeicherter EintrÃ¤ge
     // liefern.
-    uint size (){
+    uint size () {
         uint s = 0;
-        for (Node* n = head; n != nullptr; n = n->sibling)
+        for (Node *n = head; n != nullptr; n = n->child){
             ++s;
+        }
         return s;
     }
-
-    //Zusammenfassen zweier Bäume B1 und B2 mit Grad k
-    //zu einem Baum mit Grad k + 1
-    //Wenn die Prior ität des Wurzelknotens von B1 größer als die Priorität des Wurzelknotens
-    //von B2 ist, mache B1 zum Nachfolger mit dem größten Grad von B2:
-    //Andernfalls mache B2 zum Nachfolger mit dem größten Grad von B1
 
     Node* hilfsoperation(Node* B1, Node* B2){
             if(B1->entry->prio > B2->entry->prio){
@@ -112,72 +107,57 @@ struct BinHeap {
             return B2;
     }
 
-    //Vereinigen zweier Halden H1 und H2 zu einer neuen Halde H
-    //1 Erstelle einen leeren Zwischenspeicher für bis zu drei Bäume.
-    //2 Setze k = 0.
-    //3 Solange H1 oder H2 oder der Zwischenspeicher nicht leer sind:
-    //1 Wenn der erste (verbleibende) Baum von H1 Grad k besitzt,
-    //entnimm ihn aus H1 und füge ihn zum Zwischenspeicher hinzu.
-    //2 Entsprechend für H2.
-    //3 Wenn der Zwischenspeicher jetzt einen oder drei Bäume enthält,
-    //entnimm einen von ihnen und füge ihn am Ende von H an.
-    //4 Wenn der Zwischenspeicher jetzt noch zwei Bäume enthält,
-    //fasse sie zu einem Baum mit Grad k + 1 zusammen,
-    //der als „Übertrag“ für den nächsten Schritt im Zwischenspeicher verbleibt.
-    //5 Erhöhe k um 1.
-    //Beispiel: H1 mit 22 + 21 + 20
-    void merge(BinHeap<P,D> H1, BinHeap<P,D> H2){
-        uint k = 0, merker = 0, anzahlBaum = 0;
-        Node* H = nullptr;
-        Node* B1 = H1.head;
-        Node* B2 = H2.head;
+    void merge(BinHeap<P,D> H1, BinHeap<P,D> H2) {
+        uint k = 0, anzahlBaum = 0;
+        Node *H = nullptr;
+        Node *B1 = H1.head;
+        Node *B2 = H2.head;
         //ein array zum zwischenspeichern von maximalen 3 Bäumen
         Node *zwischenspeicher[4] = {nullptr, nullptr, nullptr};
-        while(B1 != nullptr || B2 != nullptr || zwischenspeicher[0] != nullptr || zwischenspeicher[1] != nullptr || zwischenspeicher[2] != nullptr){
-            if(B1 != nullptr && B1->degree == k && zwischenspeicher[merker] == nullptr){
-                zwischenspeicher[merker] = B1;
+        while (B1 != nullptr || B2 != nullptr || zwischenspeicher[0] != nullptr || zwischenspeicher[1] != nullptr || zwischenspeicher[2] != nullptr) {
+            if(B1 != nullptr && B1->degree == k ){
+                zwischenspeicher[0] = B1;
                 B1 = B1->sibling;
                 anzahlBaum++;
-                merker++;
             }else{
                 B1 = nullptr;
             }
-            if(B2 != nullptr && B2->degree == k && zwischenspeicher[merker] == nullptr){
-                zwischenspeicher[merker] = B2;
+            if(B2 != nullptr && B2->degree == k ){
+                zwischenspeicher[1] = B2;
                 B2 = B2->sibling;
-                merker++;
                 anzahlBaum++;
             }else {
                 B2 = nullptr;
             }
 
-            if(anzahlBaum == 3 || anzahlBaum == 1){
-                if(zwischenspeicher[merker] != nullptr){
-                    if(H == nullptr){
-                        H = zwischenspeicher[merker];
-                    }
-                    else{
-                        H->sibling = zwischenspeicher[merker];
-                        H = H->sibling;
-                    }
-                    zwischenspeicher[merker] = nullptr;
+            if (anzahlBaum == 3 || anzahlBaum == 1) {
+                if (zwischenspeicher[0] != nullptr && k == H->degree) {
+                    H. = zwischenspeicher[0];
+                    H->degree = k;
+                    zwischenspeicher[0] = nullptr;
+                } else if (zwischenspeicher[1] != nullptr) {
+                    H = zwischenspeicher[1];
+                    zwischenspeicher[1] = nullptr;
+                } else{
+                    H = zwischenspeicher[2];
+                    zwischenspeicher[2] = nullptr;
+                }
+
+            }else if (anzahlBaum == 2) {
+                if (zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr) {
+                    zwischenspeicher[2] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
+                    zwischenspeicher[0] = zwischenspeicher[1] = nullptr;
+                    anzahlBaum = 1;
+                    k++;
+                    continue;
                 }
             }
-            //Wenn der Zwischenspeicher jetzt noch zwei Bäume enthält,
-                //fasse sie zu einem Baum mit Grad k + 1 zusammen,
-                //der als „Übertrag“ für den nächsten Schritt im Zwischenspeicher verbleibt.
-            else if(anzahlBaum == 2){
-                    zwischenspeicher[2] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
-                    zwischenspeicher[0] = nullptr;
-                    zwischenspeicher[1] = nullptr;
-                    anzahlBaum = 1;
-                    continue;
-                  }
             k++;
-            merker = 0;
+            anzahlBaum = 0;
         }
         this->head = H;
     }
+
 
     // Neuen Eintrag mit Priorität p und zusätzlichen Daten d erzeugen,
     // zur Halde hinzufügen und zurückliefern.
@@ -231,9 +211,6 @@ struct BinHeap {
 
     // Inhalt der aktuellen Halde zu ausgeben.
     void dump (){
-        //rekusive ausgabe der aktuellen Halde
-        if (head != nullptr){
-            cout << head->entry->prio << endl;
-        }
+
     }
 };

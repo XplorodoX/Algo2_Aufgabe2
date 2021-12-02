@@ -73,7 +73,7 @@ struct BinHeap {
     }
 
     // die Anzahl der momentan gespeicherter EintrÃ¤ge
-    // liefern.
+    // liefern
     uint size () {
         uint s = 0;
         for (Node* n = head; n != nullptr; n = n->sibling)
@@ -83,28 +83,27 @@ struct BinHeap {
 
     //Hilfsoperation
     Node* hilfsoperation(Node* B1, Node* B2){
-            if(B1->entry->prio > B2->entry->prio){
+            if (B2->entry->prio < B1->entry->prio) {
                 B2->sibling = nullptr;
                 B2->degree = B2->degree + 1;
-                B1->parent =  B2;
-                if (B2->child == nullptr){
+                B1->parent = B2;
+                if (B2->child == nullptr) {
                     B2->child = B1->sibling = B1;
-                } else{
+                } else {
                     B1->sibling = B2->child->sibling;
                     B2->child = B2->child->sibling = B1;
                 }
-            }else{
+            } else {
                 B1->sibling = nullptr;
                 B1->degree = B1->degree + 1;
-                B2->parent =  B1;
-                if (B1->child == nullptr){
+                B2->parent = B1;
+                if (B1->child == nullptr) {
                     B1->child = B2->sibling = B2;
-                } else{
+                } else {
                     B2->sibling = B1->child->sibling;
                     B1->child = B1->child->sibling = B2;
                 }
             }
-            +
             return B2;
     }
 
@@ -140,10 +139,6 @@ struct BinHeap {
                     B2 = nullptr;
                 }
             }
-
-            //Nochmal zum Nacharbeiten!!!!!!
-            //Neuer Ansatz um durch das Array zu gehen?!
-            //for-Schleife?? -> Laufzeit?
             if (anzahlBaum == 3 || anzahlBaum == 1) {
                 if (H == nullptr && zwischenspeicher[0] != nullptr) {
                     H = zwischenspeicher[0];
@@ -195,7 +190,10 @@ struct BinHeap {
     // Eintrag mit minimaler PrioritÃ¤t liefern.
     // (Nullzeiger bei einer leeren Halde.)
     Entry* minimum (){
-
+        if (head == nullptr) {
+            return nullptr;
+        }
+        return head->entry;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern
@@ -230,7 +228,7 @@ struct BinHeap {
 
     }
 
-    // Inhalt der aktuellen Halde zu ausgeben.
+    // Inhalt der aktuellen Halde zu ausgeben (child und sibling)
     void dump (){
 
     }

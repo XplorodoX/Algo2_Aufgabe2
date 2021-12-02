@@ -81,6 +81,7 @@ struct BinHeap {
         return s;
     }
 
+    //Hilfsoperation
     Node* hilfsoperation(Node* B1, Node* B2){
             if(B1->entry->prio > B2->entry->prio){
                 B2->sibling = nullptr;
@@ -106,7 +107,7 @@ struct BinHeap {
             return B2;
     }
 
-    void merge(BinHeap<P,D> H1, BinHeap<P,D> H2) {
+    void Union(BinHeap<P,D> H1, BinHeap<P,D> H2) {
         uint k = 0, anzahlBaum = 0;
         Node *H = nullptr;
         Node *B1 = H1.head;
@@ -115,21 +116,33 @@ struct BinHeap {
         Node *zwischenspeicher[4] = {nullptr, nullptr, nullptr};
         while (B1 != nullptr || B2 != nullptr || zwischenspeicher[0] != nullptr || zwischenspeicher[1] != nullptr || zwischenspeicher[2] != nullptr) {
             if (B1 != nullptr && B1->degree == k) {
-                zwischenspeicher[0] = B1;
-                B1 = B1->sibling;
-                anzahlBaum++;
-            } else {
-                B1 = nullptr;
+                if (B1->sibling != nullptr && B1->sibling->degree == k) {
+                    zwischenspeicher[0] = B1;
+                    B1 = B1->sibling;
+                    zwischenspeicher[0]->sibling = nullptr;
+                    anzahlBaum++;
+                } else {
+                    zwischenspeicher[0] = B1;
+                    anzahlBaum++;
+                    B1 = nullptr;
+                }
             }
             if (B2 != nullptr && B2->degree == k) {
-                zwischenspeicher[1] = B2;
-                B2 = B2->sibling;
-                anzahlBaum++;
-            } else if (B2 == nullptr) {
-                B2 = nullptr;
+                if (B2->sibling != nullptr && B2->degree == k) {
+                    zwischenspeicher[1] = B2;
+                    B2 = B2->sibling;
+                    zwischenspeicher[1]->sibling = nullptr;
+                    anzahlBaum++;
+                }else{
+                    zwischenspeicher[1] = B2;
+                    anzahlBaum++;
+                    B2 = nullptr;
+                }
             }
-            //Wenn der Zwischenspeicher jetzt einen oder drei Bäume enthält,
-            //entnimm einen von ihnen und füge ihn am Ende von H an.
+
+            //Nochmal zum Nacharbeiten!!!!!!
+            //Neuer Ansatz um durch das Array zu gehen?!
+            //for-Schleife?? -> Laufzeit?
             if (anzahlBaum == 3 || anzahlBaum == 1) {
                 if (H == nullptr && zwischenspeicher[0] != nullptr) {
                     H = zwischenspeicher[0];
@@ -139,23 +152,27 @@ struct BinHeap {
                     H = zwischenspeicher[2];
                 }else if (H->sibling == nullptr && zwischenspeicher[0] != nullptr) {
                     H->sibling = zwischenspeicher[0];
-                    H->degree++;
                 }else if (H->sibling == nullptr && zwischenspeicher[1] != nullptr) {
                     H->sibling = zwischenspeicher[1];
-                    H->degree++;
                 }else if (H->sibling == nullptr && zwischenspeicher[2] != nullptr) {
                     H->sibling = zwischenspeicher[2];
                     H->degree++;
                 }
                 zwischenspeicher[0] = zwischenspeicher[1] = zwischenspeicher[2] = nullptr;
                 anzahlBaum = 0;
-            }else if (anzahlBaum == 2) {
-                if (zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr) {
-                    zwischenspeicher[2] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
-                    zwischenspeicher[0] = zwischenspeicher[1] = nullptr;
-                    anzahlBaum = 1;
+
+                }else if (anzahlBaum == 2) {
+                    if (zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr && zwischenspeicher[2] == nullptr) {
+                        zwischenspeicher[2] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
+                        zwischenspeicher[0] = zwischenspeicher[1] = nullptr;
+                        anzahlBaum = 1;
+                    }else if (zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr && zwischenspeicher[2] != nullptr) {
+                        zwischenspeicher[1] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
+                        zwischenspeicher[0] = nullptr;
+                        anzahlBaum = 2;
+                    }
                 }
-            }
+
             k++;
         }
         this->head = H;
@@ -170,7 +187,7 @@ struct BinHeap {
         Entry* e = new Entry(p,d);
         BinHeap<P,D> H1;
         H1.head = new Node(e);
-        merge(H1, *this);
+        Union(H1, *this);
         return head->entry;
     }
 
@@ -214,15 +231,6 @@ struct BinHeap {
 
     // Inhalt der aktuellen Halde zu ausgeben.
     void dump (){
-        if (head == nullptr) {
-            cout << "Halde ist leer" << endl;
-        } else {
-            Node* temp = head;
-            while (temp != nullptr) {
-                cout << temp->entry->prio << " " << temp->entry->data << endl;
-                temp = temp->sibling;
-            }
-        }
 
     }
 };

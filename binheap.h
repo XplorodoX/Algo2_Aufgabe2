@@ -104,6 +104,7 @@ struct BinHeap {
                     B1->child = B1->child->sibling = B2;
                 }
             }
+            +
             return B2;
     }
 
@@ -113,7 +114,7 @@ struct BinHeap {
         Node *B1 = H1.head;
         Node *B2 = H2.head;
         //ein array zum zwischenspeichern von maximalen 3 Bäumen
-        Node *zwischenspeicher[4] = {nullptr, nullptr, nullptr};
+        Node *zwischenspeicher[3] = {nullptr, nullptr, nullptr};
         while (B1 != nullptr || B2 != nullptr || zwischenspeicher[0] != nullptr || zwischenspeicher[1] != nullptr || zwischenspeicher[2] != nullptr) {
             if (B1 != nullptr && B1->degree == k) {
                 if (B1->sibling != nullptr && B1->sibling->degree == k) {
@@ -166,10 +167,10 @@ struct BinHeap {
                         zwischenspeicher[2] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
                         zwischenspeicher[0] = zwischenspeicher[1] = nullptr;
                         anzahlBaum = 1;
-                    }else if (zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr && zwischenspeicher[2] != nullptr) {
-                        zwischenspeicher[1] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
-                        zwischenspeicher[0] = nullptr;
-                        anzahlBaum = 2;
+                    }else if (zwischenspeicher[1] != nullptr && zwischenspeicher[2] != nullptr && zwischenspeicher[2] != nullptr) {
+                        zwischenspeicher[0] = hilfsoperation(zwischenspeicher[1], zwischenspeicher[2]);
+                        zwischenspeicher[1] = zwischenspeicher[2]= nullptr;
+                        anzahlBaum = 1;
                     }
                 }
 

@@ -75,10 +75,7 @@ struct BinHeap {
     // die Anzahl der momentan gespeicherter EintrÃ¤ge
     // liefern
     uint size () {
-        uint s = 0;
-        for (Node* n = head; n != nullptr; n = n->sibling)
-            ++s;
-        return s;
+
     }
 
     //Hilfsoperation
@@ -93,7 +90,7 @@ struct BinHeap {
                     B1->sibling = B2->child->sibling;
                     B2->child = B2->child->sibling = B1;
                 }
-            } else {
+            } else if(B1->entry->prio < B2->entry->prio){
                 B1->sibling = nullptr;
                 B1->degree = B1->degree + 1;
                 B2->parent = B1;
@@ -163,7 +160,7 @@ struct BinHeap {
                         zwischenspeicher[0] = zwischenspeicher[1] = nullptr;
                         anzahlBaum = 1;
                     }else if (zwischenspeicher[1] != nullptr && zwischenspeicher[2] != nullptr && zwischenspeicher[2] != nullptr) {
-                        zwischenspeicher[0] = hilfsoperation(zwischenspeicher[1], zwischenspeicher[2]);
+                        zwischenspeicher[0] = hilfsoperation(zwischenspeicher[2], zwischenspeicher[1]);
                         zwischenspeicher[1] = zwischenspeicher[2]= nullptr;
                         anzahlBaum = 1;
                     }
@@ -190,10 +187,6 @@ struct BinHeap {
     // Eintrag mit minimaler PrioritÃ¤t liefern.
     // (Nullzeiger bei einer leeren Halde.)
     Entry* minimum (){
-        if (head == nullptr) {
-            return nullptr;
-        }
-        return head->entry;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern

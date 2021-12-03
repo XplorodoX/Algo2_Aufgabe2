@@ -72,10 +72,33 @@ struct BinHeap {
         return head == nullptr;
     }
 
+    double potenz(double b,int e)
+    {
+        if(e==0) return 1;
+        if(e<0) return 1/potenz(b,-e);
+
+        double p2=potenz(b,e/2);
+        if(e%2)
+            return p2*p2*b;
+        else
+            return p2*p2;
+    }
+
     // die Anzahl der momentan gespeicherter EintrÃ¤ge
     // liefern
     uint size () {
-
+        if (isEmpty()) {
+            return 0;
+        }
+            uint size = 0;
+            for (Node *n = head; n != nullptr; n = n->sibling) {
+                if(head->child==nullptr && head->sibling==nullptr){
+                    return 1;
+                }else {
+                    size += potenz(2, n->degree);
+                }
+        }
+        return size;
     }
 
     //Hilfsoperation
@@ -187,6 +210,10 @@ struct BinHeap {
     // Eintrag mit minimaler PrioritÃ¤t liefern.
     // (Nullzeiger bei einer leeren Halde.)
     Entry* minimum (){
+        if (head == nullptr) {
+            return nullptr;
+        }
+        return head->entry;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern

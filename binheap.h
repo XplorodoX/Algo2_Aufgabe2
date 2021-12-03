@@ -236,7 +236,23 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     bool changePrio (Entry* e, P p) {
+        if (p <= head->entry->prio) {
+            head->entry->prio = p;
+            //Wenn die Prior ität des Objekts kleiner als die seines Vorgängers ist:
+            //1 Ver tausche die entry-Verweise der beiden Knoten.
+            //2 Aktualisiere die zugehörigen Rückverweise der Objekte auf diese Knoten.
+            //3 Wiederhole diesen Schritt für den Vorgänger.
+            if (head->entry->prio < head->parent->entry->prio) {
+                Entry* temp = head->entry;
+                temp = head->entry;
+                head->entry = head->parent->entry;
+                head->parent->entry = temp;
+            }
+        }else{
+            //Ander nfalls, sofer n sich das Objekt nicht in einem Blattknoten befindet:
+            //Entfer ne das Objekt und füge es mit der neuen Prior ität wieder ein.
 
+        }
     }
 
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
@@ -248,7 +264,7 @@ struct BinHeap {
 
     }
 
-    // Inhalt der aktuellen Halde zu ausgeben (child und sibling)
+    // Inhalt der aktuellen Halde zu ausgeben
     void dump (){
 
     }

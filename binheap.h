@@ -92,7 +92,7 @@ struct BinHeap {
         }
             uint size = 0;
             for (Node *n = head; n != nullptr; n = n->sibling) {
-                if(head->child==nullptr && head->sibling==nullptr){
+                if(n->child==nullptr && n->sibling==nullptr){
                     return 1;
                 }else {
                     size += potenz(2, n->degree);

@@ -87,23 +87,22 @@ struct BinHeap {
     // die Anzahl der momentan gespeicherter EintrÃ¤ge
     // liefern
     uint size () {
+        uint size = 0;
         if (isEmpty()) {
             return 0;
-        }
-            uint size = 0;
+        }else if(head->child == nullptr && head->sibling == nullptr){
+            return 1;
+        }else {
             for (Node *n = head; n != nullptr; n = n->sibling) {
-                if(n->child==nullptr && n->sibling==nullptr){
-                    return 1;
-                }else {
-                    size += potenz(2, n->degree);
-                }
+                size += potenz(2, n->degree);
+            }
         }
         return size;
     }
 
     //Hilfsoperation
     Node* hilfsoperation(Node* B1, Node* B2){
-            if (B2->entry->prio < B1->entry->prio) {
+            if (B2->entry->prio <= B1->entry->prio) {
                 B2->sibling = nullptr;
                 B2->degree = B2->degree + 1;
                 B1->parent = B2;
@@ -113,7 +112,7 @@ struct BinHeap {
                     B1->sibling = B2->child->sibling;
                     B2->child = B2->child->sibling = B1;
                 }
-            } else if(B1->entry->prio < B2->entry->prio){
+            } else if(B1->entry->prio <= B2->entry->prio){
                 B1->sibling = nullptr;
                 B1->degree = B1->degree + 1;
                 B2->parent = B1;
@@ -172,11 +171,29 @@ struct BinHeap {
                     H->sibling = zwischenspeicher[1];
                 }else if (H->sibling == nullptr && zwischenspeicher[2] != nullptr) {
                     H->sibling = zwischenspeicher[2];
-                    H->degree++;
+                }else if (H->sibling != nullptr && zwischenspeicher[0] != nullptr){
+                    Node* tmp;
+                    tmp = H->sibling;
+                    tmp->sibling = zwischenspeicher[0];
+                    H->sibling = tmp;
+                    delete tmp;
+                }
+                else if (H->sibling != nullptr && zwischenspeicher[1] != nullptr) {
+                    Node* tmp;
+                    tmp = H->sibling;
+                    tmp->sibling = zwischenspeicher[1];
+                    H->sibling = tmp;
+                    delete tmp;
+                }
+                else if (H->sibling != nullptr && zwischenspeicher[2] != nullptr) {
+                    Node* tmp;
+                    tmp = H->sibling;
+                    tmp->sibling = zwischenspeicher[2];
+                    H->sibling = tmp;
+                    delete tmp;
                 }
                 zwischenspeicher[0] = zwischenspeicher[1] = zwischenspeicher[2] = nullptr;
                 anzahlBaum = 0;
-
                 }else if (anzahlBaum == 2) {
                     if (zwischenspeicher[0] != nullptr && zwischenspeicher[1] != nullptr && zwischenspeicher[2] == nullptr) {
                         zwischenspeicher[2] = hilfsoperation(zwischenspeicher[0], zwischenspeicher[1]);
@@ -214,14 +231,21 @@ struct BinHeap {
         if (head == nullptr) {
             return nullptr;
         }
-        return head->entry;
+        for (Node *n = head; n != nullptr; n = n->sibling) {
+            return head->entry;
+        }
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
-
+        if (head == nullptr) {
+            return nullptr;
+        }
+        Node* tmp = head;
+        head = head->sibling;
+        return tmp->entry;
     }
 
     // EnthÃ¤lt die Halde den Eintrag e?

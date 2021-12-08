@@ -172,25 +172,20 @@ struct BinHeap {
                 }else if (H->sibling == nullptr && zwischenspeicher[2] != nullptr) {
                     H->sibling = zwischenspeicher[2];
                 }else if (H->sibling != nullptr && zwischenspeicher[0] != nullptr){
-                    Node* tmp;
-                    tmp = H->sibling;
-                    tmp->sibling = zwischenspeicher[0];
-                    H->sibling = tmp;
-                    delete tmp;
+
                 }
                 else if (H->sibling != nullptr && zwischenspeicher[1] != nullptr) {
-                    Node* tmp;
-                    tmp = H->sibling;
-                    tmp->sibling = zwischenspeicher[1];
-                    H->sibling = tmp;
-                    delete tmp;
+                    while(H->sibling != nullptr){
+                        if(H->sibling == nullptr){
+                            H->sibling = zwischenspeicher[1];
+                            break;
+                        }else{
+                            continue;
+                        }
+                    }
                 }
                 else if (H->sibling != nullptr && zwischenspeicher[2] != nullptr) {
-                    Node* tmp;
-                    tmp = H->sibling;
-                    tmp->sibling = zwischenspeicher[2];
-                    H->sibling = tmp;
-                    delete tmp;
+
                 }
                 zwischenspeicher[0] = zwischenspeicher[1] = zwischenspeicher[2] = nullptr;
                 anzahlBaum = 0;
@@ -251,7 +246,15 @@ struct BinHeap {
     // EnthÃ¤lt die Halde den Eintrag e?
     // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
-
+        if (head == nullptr) {
+            return false;
+        }
+        for (Node *n = head; n != nullptr; n = n->sibling) {
+            if (n->entry == e) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
@@ -267,11 +270,18 @@ struct BinHeap {
             //1 Ver tausche die entry-Verweise der beiden Knoten.
             //2 Aktualisiere die zugehörigen Rückverweise der Objekte auf diese Knoten.
             //3 Wiederhole diesen Schritt für den Vorgänger.
-            if (head->entry->prio < head->parent->entry->prio) {
-                Entry* temp = head->entry;
-                temp = head->entry;
-                head->entry = head->parent->entry;
-                head->parent->entry = temp;
+            Node* tmp = head;
+            Node* tmp2 = head->sibling;
+            while (tmp2 != nullptr) {
+                if (tmp2->entry->prio < tmp->entry->prio) {
+                    tmp->entry = tmp2->entry;
+                    tmp2->entry = e;
+                    tmp = tmp2;
+                    tmp2 = tmp2->sibling;
+                }else {
+                    tmp = tmp2;
+                    tmp2 = tmp2->sibling;
+                }
             }
         }else{
             //Ander nfalls, sofer n sich das Objekt nicht in einem Blattknoten befindet:
@@ -286,10 +296,9 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich.
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-
     }
 
-    // Inhalt der aktuellen Halde zu ausgeben
+    // Inhalt der aktuellen Halde muss eingerückt ausgeben werden
     void dump (){
 
     }

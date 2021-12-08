@@ -126,6 +126,19 @@ struct BinHeap {
             return B2;
     }
 
+    //Am Wurzelknoten Bäume mit verschiender Grad als Sibling zusammenfügen
+    Node* anketten(Node* B1, Node* B2){
+        for(Node* n = B1; n != nullptr; n = n->sibling){
+            if(n->sibling != nullptr){
+                continue;
+            } else{
+                n->sibling = B2;
+                B2->sibling = nullptr;
+                return B1;
+            }
+        }
+    }
+
     void Union(BinHeap<P,D> H1, BinHeap<P,D> H2) {
         uint k = 0, anzahlBaum = 0;
         Node *H = nullptr;
@@ -143,6 +156,7 @@ struct BinHeap {
                 } else {
                     zwischenspeicher[0] = B1;
                     anzahlBaum++;
+                    zwischenspeicher[0]->sibling = nullptr;
                     B1 = nullptr;
                 }
             }
@@ -154,6 +168,7 @@ struct BinHeap {
                     anzahlBaum++;
                 }else{
                     zwischenspeicher[1] = B2;
+                    zwischenspeicher[1]->sibling = nullptr;
                     anzahlBaum++;
                     B2 = nullptr;
                 }
@@ -171,21 +186,12 @@ struct BinHeap {
                     H->sibling = zwischenspeicher[1];
                 }else if (H->sibling == nullptr && zwischenspeicher[2] != nullptr) {
                     H->sibling = zwischenspeicher[2];
-                }else if (H->sibling != nullptr && zwischenspeicher[0] != nullptr){
-
-                }
-                else if (H->sibling != nullptr && zwischenspeicher[1] != nullptr) {
-                    while(H->sibling != nullptr){
-                        if(H->sibling == nullptr){
-                            H->sibling = zwischenspeicher[1];
-                            break;
-                        }else{
-                            continue;
-                        }
-                    }
-                }
-                else if (H->sibling != nullptr && zwischenspeicher[2] != nullptr) {
-
+                } else if(H->sibling != nullptr && zwischenspeicher[0] != nullptr) {
+                    H = anketten(H, zwischenspeicher[0]);
+                }else if(H->sibling != nullptr && zwischenspeicher[1] != nullptr) {
+                    H = anketten(H, zwischenspeicher[1]);
+                }else if(H->sibling != nullptr && zwischenspeicher[2] != nullptr) {
+                    H = anketten(H, zwischenspeicher[2]);
                 }
                 zwischenspeicher[0] = zwischenspeicher[1] = zwischenspeicher[2] = nullptr;
                 anzahlBaum = 0;

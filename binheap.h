@@ -1,5 +1,6 @@
 // Vorzeichenlose ganze Zahl.
 using uint = unsigned int;
+#define infinity "\0\0\0\0\0\0\360\377"
 
 // Als Binomial-Halde implementierte Minimum-Vorrangwarteschlange
 // mit PrioritÃ¤ten des Typs P und zusÃ¤tzlichen Daten des Typs D.
@@ -102,7 +103,7 @@ struct BinHeap {
 
     //Hilfsoperation
     Node* hilfsoperation(Node* B1, Node* B2){
-            if (B2->entry->prio <= B1->entry->prio) {
+            if (B2->entry->prio < B1->entry->prio) {
                 B2->sibling = nullptr;
                 B2->degree = B2->degree + 1;
                 B1->parent = B2;
@@ -112,7 +113,8 @@ struct BinHeap {
                     B1->sibling = B2->child->sibling;
                     B2->child = B2->child->sibling = B1;
                 }
-            } else if(B1->entry->prio <= B2->entry->prio){
+                return B2;
+            }else{
                 B1->sibling = nullptr;
                 B1->degree = B1->degree + 1;
                 B2->parent = B1;
@@ -122,8 +124,8 @@ struct BinHeap {
                     B2->sibling = B1->child->sibling;
                     B1->child = B1->child->sibling = B2;
                 }
+                return B1;
             }
-            return B2;
     }
 
     //Am Wurzelknoten Bäume mit verschiender Grad als Sibling zusammenfügen
@@ -153,7 +155,7 @@ struct BinHeap {
                     B1 = B1->sibling;
                     zwischenspeicher[0]->sibling = nullptr;
                     anzahlBaum++;
-                } else {
+                }else {
                     zwischenspeicher[0] = B1;
                     anzahlBaum++;
                     zwischenspeicher[0]->sibling = nullptr;
@@ -232,9 +234,16 @@ struct BinHeap {
         if (head == nullptr) {
             return nullptr;
         }
-        for (Node *n = head; n != nullptr; n = n->sibling) {
+        if(head->sibling == nullptr) {
             return head->entry;
         }
+        Node* temp = head;
+        while (temp->sibling != nullptr) {
+            if (temp->sibling->entry->prio < temp->entry->prio) {
+                temp = temp->sibling;
+            }
+        }
+        return temp->entry;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern
@@ -244,23 +253,17 @@ struct BinHeap {
         if (head == nullptr) {
             return nullptr;
         }
-        Node* tmp = head;
-        head = head->sibling;
-        return tmp->entry;
+        if(head->sibling == nullptr) {
+            Entry* e = minimum();
+            head = nullptr;
+            return e;
+        }
     }
 
     // EnthÃ¤lt die Halde den Eintrag e?
     // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
-        if (head == nullptr) {
-            return false;
-        }
-        for (Node *n = head; n != nullptr; n = n->sibling) {
-            if (n->entry == e) {
-                return true;
-            }
-        }
-        return false;
+
     }
 
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
@@ -270,42 +273,18 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     bool changePrio (Entry* e, P p) {
-        if (p <= head->entry->prio) {
-            head->entry->prio = p;
-            //Wenn die Prior ität des Objekts kleiner als die seines Vorgängers ist:
-            //1 Ver tausche die entry-Verweise der beiden Knoten.
-            //2 Aktualisiere die zugehörigen Rückverweise der Objekte auf diese Knoten.
-            //3 Wiederhole diesen Schritt für den Vorgänger.
-            Node* tmp = head;
-            Node* tmp2 = head->sibling;
-            while (tmp2 != nullptr) {
-                if (tmp2->entry->prio < tmp->entry->prio) {
-                    tmp->entry = tmp2->entry;
-                    tmp2->entry = e;
-                    tmp = tmp2;
-                    tmp2 = tmp2->sibling;
-                }else {
-                    tmp = tmp2;
-                    tmp2 = tmp2->sibling;
-                }
-            }
-        }else{
-            //Ander nfalls, sofer n sich das Objekt nicht in einem Blattknoten befindet:
-            //Entfer ne das Objekt und füge es mit der neuen Prior ität wieder ein.
 
-        }
     }
 
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
-    //Ändere die Priorität des Objekts quasi auf unendlich.
+    //Ändere die Priorität des Objekts quasi auf unendlich ohne standart bibliotheken zu nutzen.
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
     }
 
     // Inhalt der aktuellen Halde muss eingerückt ausgeben werden
     void dump (){
-
     }
 };

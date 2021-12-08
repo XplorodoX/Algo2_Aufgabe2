@@ -75,14 +75,19 @@ struct BinHeap {
 
     double potenz(double b,int e)
     {
-        if(e==0) return 1;
-        if(e<0) return 1/potenz(b,-e);
+        if(e==0){
+            return 1;
+        }
+        if(e<0){
+            return 1/potenz(b,-e);
+        }
 
         double p2=potenz(b,e/2);
-        if(e%2)
-            return p2*p2*b;
-        else
-            return p2*p2;
+        if(e%2) {
+            return p2 * p2 * b;
+        }else {
+            return p2 * p2;
+        }
     }
 
     // die Anzahl der momentan gespeicherter EintrÃ¤ge

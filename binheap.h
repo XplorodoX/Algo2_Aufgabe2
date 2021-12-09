@@ -1,6 +1,6 @@
 // Vorzeichenlose ganze Zahl.
 using uint = unsigned int;
-#define infinity "\0\0\0\0\0\0\360\377"
+#define infinity "\0"
 
 // Als Binomial-Halde implementierte Minimum-Vorrangwarteschlange
 // mit PrioritÃ¤ten des Typs P und zusÃ¤tzlichen Daten des Typs D.
@@ -151,7 +151,6 @@ struct BinHeap {
         Node *H = nullptr;
         Node *B1 = H1.head;
         Node *B2 = H2.head;
-        //ein array zum zwischenspeichern von maximalen 3 Bäumen
         Node *zwischenspeicher[3] = {nullptr, nullptr, nullptr};
         while (B1 != nullptr || B2 != nullptr || zwischenspeicher[0] != nullptr || zwischenspeicher[1] != nullptr || zwischenspeicher[2] != nullptr) {
             if (B1 != nullptr && B1->degree == k) {
@@ -284,9 +283,11 @@ struct BinHeap {
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
-    //Ändere die Priorität des Objekts quasi auf unendlich ohne standart bibliotheken zu nutzen.
+    //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
+        e->prio = infinity;
+        Entry* e1 = extractMin();
     }
 
     // Inhalt der aktuellen Halde muss eingerückt ausgeben werden

@@ -1,6 +1,5 @@
 // Vorzeichenlose ganze Zahl.
 using uint = unsigned int;
-#define infinity "\0"
 
 // Als Binomial-Halde implementierte Minimum-Vorrangwarteschlange
 // mit PrioritÃ¤ten des Typs P und zusÃ¤tzlichen Daten des Typs D.
@@ -304,8 +303,6 @@ struct BinHeap {
             }
         }
     }
-
-
 
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
     // Hierbei darf auf keinen Fall ein neues Entry-Objekt entstehen,

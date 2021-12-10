@@ -250,18 +250,22 @@ struct BinHeap {
         return temp->entry;
     }
 
+
+    Entry* bubbleUp(Entry* e){
+        while (e->node->parent != nullptr && e->prio < e->node->parent->entry->prio) {
+            Node* temp = e->node->parent;
+            e->node->parent->entry = e->node->entry;
+            e->node->entry = temp->entry;
+            delete temp;
+        }
+        return e;
+    }
+
     // Eintrag mit minimaler PrioritÃ¤t liefern
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
-        if (head == nullptr) {
-            return nullptr;
-        }
-        if(head->sibling == nullptr) {
-            Entry* e = minimum();
-            head = nullptr;
-            return e;
-        }
+
     }
 
     // EnthÃ¤lt die Halde den Eintrag e?
@@ -270,6 +274,7 @@ struct BinHeap {
 
     }
 
+
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
     // Hierbei darf auf keinen Fall ein neues Entry-Objekt entstehen,
     // selbst wenn die Operation intern als Entfernen und Neu-EinfÃ¼gen
@@ -277,7 +282,25 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     bool changePrio (Entry* e, P p) {
+        if (e == nullptr || e->node == nullptr) {
+            return false;
+        }else{
+            if(p < e->prio) {
+                //sofern sich das Objekt nicht in einem Blattknoten befindet:
+                //Entferne das Objekt und füge es mit der neuen Priorität wieder ein.
+                if (e->node->parent != nullptr && e->node->child == nullptr) {
+                    Entry* e2 = new Entry(p, e->data);
+                    remove(e);
+                    insert(p, e2->data);
+                }
 
+            }else{
+                e->prio = p;
+                bubbleUp(e);
+                return true;
+            }
+
+        }
     }
 
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
@@ -287,7 +310,8 @@ struct BinHeap {
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
         e->prio = infinity;
-        Entry* e1 = extractMin();
+        changePrio(e, infinity);
+        return extractMin() != nullptr;
     }
 
     // Inhalt der aktuellen Halde muss eingerückt ausgeben werden

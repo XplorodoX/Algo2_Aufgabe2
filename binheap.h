@@ -265,13 +265,31 @@ struct BinHeap {
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
+        if(head == nullptr) {
+            return nullptr;
+        }
 
+        Node *min = head;
+        Node *minPrev = nullptr;
+        Node *next = min->sibling;
+        Node *nextPrev = min;
+
+        while (next != nullptr){
+            if (next->entry->prio < min->entry->prio && next->entry->prio < "\0") {
+                minPrev = nextPrev;
+                min = next;
+            }
+            nextPrev = next;
+            next = next->sibling;
+        }
+        removeTree(min, minPrev);
+        return min->entry;
     }
 
     // EnthÃ¤lt die Halde den Eintrag e?
     // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
-
+        return true;
     }
 
 
@@ -282,25 +300,29 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     bool changePrio (Entry* e, P p) {
-        if (e == nullptr || e->node == nullptr) {
-            return false;
+        e->prio = p;
+        bubbleUp(e);
+        return true;
+    }
+
+    void removeTree(Node* root, Node* rev){
+        if (root == head){
+            head = head->sibling;
         }else{
-            if(p < e->prio) {
-                //sofern sich das Objekt nicht in einem Blattknoten befindet:
-                //Entferne das Objekt und füge es mit der neuen Priorität wieder ein.
-                if (e->node->parent != nullptr && e->node->child == nullptr) {
-                    Entry* e2 = new Entry(p, e->data);
-                    remove(e);
-                    insert(p, e2->data);
-                }
-
-            }else{
-                e->prio = p;
-                bubbleUp(e);
-                return true;
-            }
-
+            rev->sibling = root->sibling;
         }
+
+        Node *newHead = nullptr;
+        Node *child = root->child;
+        while (child != nullptr) {
+            Node *next = child->sibling;
+            child->sibling = newHead;
+            newHead = child;
+            child = next;
+        }
+        BinHeap<P,D> H1;
+        H1.head = new BinHeap<P,D>(newHead);
+        Union(H1, *this);
     }
 
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
@@ -309,12 +331,28 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-        e->prio = infinity;
-        changePrio(e, infinity);
-        return extractMin() != nullptr;
+        e = bubbleUp(e);
+        if(head == e->node){
+            removeTree(e->node, nullptr);
+        }else{
+            Node * prev = head;
+            while (prev->sibling != e->node && prev->sibling != nullptr) {
+                prev = prev->sibling;
+            }
+            removeTree(e->node, prev);
+        }
+        return true;
     }
 
-    // Inhalt der aktuellen Halde muss eingerückt ausgeben werden
     void dump (){
+        if (head == nullptr) {
+            cout << "Halde ist leer" << endl;
+        }else{
+            Node* temp = head;
+            while (temp != nullptr) {
+                cout << temp->entry->prio << " " << temp->entry->data << endl;
+                temp = temp->sibling;
+            }
+        }
     }
 };

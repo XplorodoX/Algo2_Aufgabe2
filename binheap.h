@@ -73,8 +73,7 @@ struct BinHeap {
         return head == nullptr;
     }
 
-    double potenz(double b,int e)
-    {
+    double potenz(double b,int e){
         if(e==0){
             return 1;
         }
@@ -289,8 +288,23 @@ struct BinHeap {
     // EnthÃ¤lt die Halde den Eintrag e?
     // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
-        return true;
+        if (e == nullptr){
+            return false;
+        }else{
+            while(e->parent != nullptr){
+                e = e->parent;
+                if (e == nullptr) {
+                    while (head->sibling != nullptr) {
+                        head = head->sibling;
+                        if (e == head) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
     }
+
 
 
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
@@ -321,8 +335,8 @@ struct BinHeap {
             child = next;
         }
         BinHeap<P,D> H1;
-        H1.head = new BinHeap<P,D>(newHead);
-        Union(H1, *this);
+        //H1.head = new BinHeap<P,D>(newHead);
+        //Union(H1, *this);
     }
 
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
@@ -345,14 +359,6 @@ struct BinHeap {
     }
 
     void dump (){
-        if (head == nullptr) {
-            cout << "Halde ist leer" << endl;
-        }else{
-            Node* temp = head;
-            while (temp != nullptr) {
-                cout << temp->entry->prio << " " << temp->entry->data << endl;
-                temp = temp->sibling;
-            }
-        }
+
     }
 };

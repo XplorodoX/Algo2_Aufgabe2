@@ -227,7 +227,7 @@ struct BinHeap {
         BinHeap<P,D> H1;
         H1.head = new Node(e);
         Union(H1, *this);
-        return head->entry;
+        return e;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern.
@@ -287,21 +287,7 @@ struct BinHeap {
     // EnthÃ¤lt die Halde den Eintrag e?
     // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
-        if (e == nullptr){
-            return false;
-        }else{
-            while(e->node->parent != nullptr){
-                e = e->node->parent->entry;
-                if (e->node->parent == nullptr) {
-                    while (head->sibling != nullptr) {
-                        head = head->sibling;
-                        if (e->node == head) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
+
     }
 
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.

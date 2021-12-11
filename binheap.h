@@ -304,32 +304,13 @@ struct BinHeap {
         return true;
     }
 
-    void removeTree(Node* root, Node* rev){
-        if (root == head){
-            head = head->sibling;
-        }else{
-            rev->sibling = root->sibling;
-        }
-
-        Node *newHead = nullptr;
-        Node *child = root->child;
-        while (child != nullptr) {
-            Node *next = child->sibling;
-            child->sibling = newHead;
-            newHead = child;
-            child = next;
-        }
-        BinHeap<P,D> H1;
-        //H1.head = new BinHeap<P,D>(newHead);
-        //Union(H1, *this);
-    }
-
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
+
     }
 
     void dump (){

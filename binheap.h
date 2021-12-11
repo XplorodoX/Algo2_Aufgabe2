@@ -287,7 +287,23 @@ struct BinHeap {
     // EnthÃ¤lt die Halde den Eintrag e?
     // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
-
+        if (e != nullptr){
+            while(e->node->parent != nullptr){
+                e = e->node->parent->entry;
+                if (e->node->parent == nullptr && head->sibling == nullptr) {
+                    return true;
+                }else{
+                    while (head->sibling != nullptr) {
+                        head = head->sibling;
+                        if (e->node == head) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }else{
+            return false;
+        }
     }
 
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
@@ -328,7 +344,7 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-
+        bool neu = contains(e);
     }
 
     void dump (){

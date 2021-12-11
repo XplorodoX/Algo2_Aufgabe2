@@ -290,12 +290,12 @@ struct BinHeap {
         if (e == nullptr){
             return false;
         }else{
-            while(e->parent != nullptr){
-                e = e->parent;
-                if (e == nullptr) {
+            while(e->node->parent != nullptr){
+                e = e->node->parent->entry;
+                if (e->node->parent == nullptr) {
                     while (head->sibling != nullptr) {
                         head = head->sibling;
-                        if (e == head) {
+                        if (e->node == head) {
                             return true;
                         }
                     }
@@ -342,17 +342,7 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-        e = bubbleUp(e);
-        if(head == e->node){
-            removeTree(e->node, nullptr);
-        }else{
-            Node * prev = head;
-            while (prev->sibling != e->node && prev->sibling != nullptr) {
-                prev = prev->sibling;
-            }
-            removeTree(e->node, prev);
-        }
-        return true;
+
     }
 
     void dump (){

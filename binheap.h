@@ -248,40 +248,24 @@ struct BinHeap {
         return temp->entry;
     }
 
-
+    //vertauschen der Entry, wenn die Priorität kleiner ist als der Parent
     Entry* bubbleUp(Entry* e){
-        while (e->node->parent != nullptr && e->prio < e->node->parent->entry->prio) {
-            Node* temp = e->node->parent;
-            e->node->parent->entry = e->node->entry;
-            e->node->entry = temp->entry;
-            delete temp;
+        Node* aktuell = e->node;
+        Node* parent = e->node->parent;
+        while (parent != nullptr && aktuell->entry->prio < parent->entry->prio) {
+            Entry* temp = parent->entry;
+            parent->entry = aktuell->entry;
+            aktuell->entry = temp;
+            aktuell = parent;
+            parent = aktuell->parent;
         }
-        return e;
     }
 
     // Eintrag mit minimaler PrioritÃ¤t liefern
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
-        if(head == nullptr) {
-            return nullptr;
-        }
 
-        Node *min = head;
-        Node *minPrev = nullptr;
-        Node *next = min->sibling;
-        Node *nextPrev = min;
-
-        while (next != nullptr){
-            if (next->entry->prio < min->entry->prio && next->entry->prio < "\0") {
-                minPrev = nextPrev;
-                min = next;
-            }
-            nextPrev = next;
-            next = next->sibling;
-        }
-        removeTree(min, minPrev);
-        return min->entry;
     }
 
     // EnthÃ¤lt die Halde den Eintrag e?
@@ -315,7 +299,7 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     bool changePrio (Entry* e, P p) {
-        e->prio = p;
+        e->node->entry->prio = p;
         bubbleUp(e);
         return true;
     }
@@ -346,7 +330,6 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-        bool neu = contains(e);
     }
 
     void dump (){

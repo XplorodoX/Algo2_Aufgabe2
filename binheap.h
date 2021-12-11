@@ -287,7 +287,9 @@ struct BinHeap {
     // EnthÃ¤lt die Halde den Eintrag e?
     // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
-        if (e != nullptr){
+        if(e == head->entry) {
+            return true;
+        }else if (e != nullptr){
             while(e->node->parent != nullptr){
                 e = e->node->parent->entry;
                 if (e->node->parent == nullptr && head->sibling == nullptr) {

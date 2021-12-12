@@ -6,7 +6,7 @@ using uint = unsigned int;
 // An der Stelle, an der BinHeap fÃ¼r einen bestimmten Typ P verwendet
 // wird, muss ein Kleineroperator (<) fÃ¼r den Typ P bekannt sein.
 // Werte des Typs P dÃ¼rfen nur mit diesem Operator verglichen werden;
-// die Ã¼brigen Vergleichsoperatoren (<=, >, >=, ==, !=) dÃ¼rfen nicht
+// die Ã¼brigen Vergleichsoperatoren (<=, >, >=, ==, !=) dürfen nicht
 // verwendet werden.
 
 template <typename P, typename D>
@@ -306,7 +306,7 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehört.)
     bool changePrio (Entry* e, P p) {
-        if (e == nullptr || e->node == nullptr) {
+        if (e == nullptr || contains(e) == false) {
             return false;
         }
        if(e->node->entry->prio < p){

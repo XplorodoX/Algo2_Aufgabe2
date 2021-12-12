@@ -243,10 +243,19 @@ struct BinHeap {
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
+        if (head == nullptr) {
+            return nullptr;
+        }
         return minimum();
     }
 
+    // Enthält die Halde den Eintrag e?
+    // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
+        if (e == nullptr) {
+            return false;
+        }
+
         if(e == head->entry) {
             return true;
         }else if (e != nullptr){
@@ -287,8 +296,10 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     bool changePrio (Entry* e, P p) {
+        if (e == nullptr || e->node == nullptr) {
+            return false;
+        }
        if(e->node->entry->prio < p){
-           // sofern sich das Objekt nicht in einem Blattknoten befindet:
            if(e->node->child != nullptr){
                remove(e);
                insert(p, e->node->entry->data);
@@ -325,7 +336,7 @@ struct BinHeap {
                 e->node->entry->prio = p;
             }
         }
-        //extractMin();
+        extractMin();
     }
 
     void dump (){

@@ -268,16 +268,16 @@ struct BinHeap {
         }
     }
 
-    Entry bubleup(Entry* e){
+    void bubleup(Entry* e){
         if (e->node->parent != nullptr) {
             if (e->node->entry->prio < e->node->parent->entry->prio) {
                 Entry* temp = e->node->parent->entry;
                 e->node->parent->entry = e;
                 e->node->entry = temp;
+                e->node = e->node->parent;
                 return bubleup(e);
             }
         }
-        return *e;
     }
 
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
@@ -310,8 +310,7 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-        e->node->entry->prio = "a";
-        bubleup(e);
+
     }
 
     void dump (){

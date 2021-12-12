@@ -289,9 +289,9 @@ struct BinHeap {
     bool changePrio (Entry* e, P p) {
        if(e->node->entry->prio < p){
            // sofern sich das Objekt nicht in einem Blattknoten befindet:
-           if(e->node->child == nullptr && e->node->parent != nullptr){
+           if(e->node->child != nullptr){
                remove(e);
-               insert(e->prio, e->data);
+               insert(p, e->node->entry->data);
                return true;
            }
        }else{

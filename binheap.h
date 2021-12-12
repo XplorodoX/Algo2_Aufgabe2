@@ -104,7 +104,6 @@ struct BinHeap {
         return size;
     }
 
-    //Hilfsoperation
     Node* hilfsoperation(Node* B1, Node* B2){
             if (B2->entry->prio < B1->entry->prio) {
                 B2->sibling = nullptr;
@@ -131,7 +130,6 @@ struct BinHeap {
             }
     }
 
-    //Am Wurzelknoten Bäume mit verschiender Grad als Sibling zusammenfügen
     Node* anketten(Node* B1, Node* B2){
         for(Node* n = B1; n != nullptr; n = n->sibling){
             if(n->sibling != nullptr){
@@ -217,11 +215,6 @@ struct BinHeap {
         this->head = H;
     }
 
-
-    // Neuen Eintrag mit Priorität p und zusätzlichen Daten d erzeugen,
-    // zur Halde hinzufügen und zurückliefern.
-    //Erzeuge eine temporäre Halde mit einem einzigen Baum mit Grad 0, die das Objekt
-    //enthält, und vereinige sie mit der aktuellen Halde.
     Entry* insert (P p, D d){
         Entry* e = new Entry(p,d);
         BinHeap<P,D> H1;
@@ -230,8 +223,6 @@ struct BinHeap {
         return e;
     }
 
-    // Eintrag mit minimaler PrioritÃ¤t liefern.
-    // (Nullzeiger bei einer leeren Halde.)
     Entry* minimum (){
         if (head == nullptr) {
             return nullptr;
@@ -248,28 +239,13 @@ struct BinHeap {
         return temp->entry;
     }
 
-    //vertauschen der Entry, wenn die Priorität kleiner ist als der Parent
-    Entry* bubbleUp(Entry* e){
-        Node* aktuell = e->node;
-        Node* parent = e->node->parent;
-        while (parent != nullptr && aktuell->entry->prio < parent->entry->prio) {
-            Entry* temp = parent->entry;
-            parent->entry = aktuell->entry;
-            aktuell->entry = temp;
-            aktuell = parent;
-            parent = aktuell->parent;
-        }
-    }
-
     // Eintrag mit minimaler PrioritÃ¤t liefern
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
-
+        return minimum();
     }
 
-    // EnthÃ¤lt die Halde den Eintrag e?
-    // Resultatwert false, wenn e ein Nullzeiger ist.
     bool contains (Entry* e){
         if(e == head->entry) {
             return true;
@@ -292,6 +268,18 @@ struct BinHeap {
         }
     }
 
+    Entry bubleup(Entry* e){
+        if (e->node->parent != nullptr) {
+            if (e->node->entry->prio < e->node->parent->entry->prio) {
+                Entry* temp = e->node->parent->entry;
+                e->node->parent->entry = e;
+                e->node->entry = temp;
+                return bubleup(e);
+            }
+        }
+        return *e;
+    }
+
     // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
     // Hierbei darf auf keinen Fall ein neues Entry-Objekt entstehen,
     // selbst wenn die Operation intern als Entfernen und Neu-EinfÃ¼gen
@@ -299,9 +287,21 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehÃ¶rt.)
     bool changePrio (Entry* e, P p) {
-        e->node->entry->prio = p;
-        bubbleUp(e);
-        return true;
+       if(e->node->entry->prio < p){
+           // sofern sich das Objekt nicht in einem Blattknoten befindet:
+           if(e->node->child == nullptr && e->node->parent != nullptr){
+               //Entferne das Objekt und füge es mit der neuen Priorität wieder ein.
+               //remove(e);
+               //insert(e->p, e->d);
+           }
+       }else{
+           e->node->entry->prio = p;
+           if(e->node->entry->prio < e->node->parent->entry->prio){
+               bubleup(e->node->entry);
+               return true;
+           }
+       }
+       return false;
     }
 
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
@@ -310,7 +310,8 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-
+        e->node->entry->prio = "a";
+        bubleup(e);
     }
 
     void dump (){

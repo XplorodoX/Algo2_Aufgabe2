@@ -268,7 +268,7 @@ struct BinHeap {
         }
     }
 
-    void bubleup(Entry* e){
+    Entry* bubleup(Entry* e){
         if (e->node->parent != nullptr) {
             if (e->node->entry->prio < e->node->parent->entry->prio) {
                 Entry* temp = e->node->parent->entry;
@@ -310,7 +310,22 @@ struct BinHeap {
     //Ändere die Priorität des Objekts quasi auf unendlich
     // Führe dann die Operation „Entnehmen“ aus.
     bool remove (Entry* e){
-
+        if(e == nullptr || contains(e) == false) {
+            return false;
+        }
+        while(e->node->parent != nullptr){
+            if(e->node->entry->prio < e->node->parent->entry->prio){
+                bubleup(e->node->entry);
+            }else{
+                P p = minimum()->prio;
+                Entry* temp = e->node->parent->entry;
+                e->node->parent->entry = e;
+                e->node->entry = temp;
+                e->node = e->node->parent;
+                e->node->entry->prio = p;
+            }
+        }
+        //extractMin();
     }
 
     void dump (){

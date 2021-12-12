@@ -290,9 +290,9 @@ struct BinHeap {
        if(e->node->entry->prio < p){
            // sofern sich das Objekt nicht in einem Blattknoten befindet:
            if(e->node->child == nullptr && e->node->parent != nullptr){
-               //Entferne das Objekt und füge es mit der neuen Priorität wieder ein.
-               //remove(e);
-               //insert(e->p, e->d);
+               remove(e);
+               insert(e->p, e->d);
+               return true;
            }
        }else{
            e->node->entry->prio = p;

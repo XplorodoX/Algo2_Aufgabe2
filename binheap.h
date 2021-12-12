@@ -72,6 +72,7 @@ struct BinHeap {
         return head == nullptr;
     }
 
+    //die Potenz wird hier berechnet
     double potenz(double b,int e){
         if(e==0){
             return 1;
@@ -104,6 +105,7 @@ struct BinHeap {
         return size;
     }
 
+    // Um einen k+1 Baum zu generieren.
     Node* hilfsoperation(Node* B1, Node* B2){
             if (B2->entry->prio < B1->entry->prio) {
                 B2->sibling = nullptr;
@@ -130,6 +132,7 @@ struct BinHeap {
             }
     }
 
+    //Kettet alle übrigen Nodes im Wurzelknoten an
     Node* anketten(Node* B1, Node* B2){
         for(Node* n = B1; n != nullptr; n = n->sibling){
             if(n->sibling != nullptr){
@@ -142,6 +145,7 @@ struct BinHeap {
         }
     }
 
+    //Merged zwei Biominalheaps
     void Union(BinHeap<P,D> H1, BinHeap<P,D> H2) {
         uint k = 0, anzahlBaum = 0;
         Node *H = nullptr;
@@ -215,6 +219,8 @@ struct BinHeap {
         this->head = H;
     }
 
+    // Neuen Eintrag mit Priorität p und zusätzlichen Daten d erzeugen,
+    // zur Halde hinzufügen und zurückliefern.
     Entry* insert (P p, D d){
         Entry* e = new Entry(p,d);
         BinHeap<P,D> H1;
@@ -223,6 +229,8 @@ struct BinHeap {
         return e;
     }
 
+    // Eintrag mit minimaler Priorität liefern.
+    // (Nullzeiger bei einer leeren Halde.)
     Entry* minimum (){
         if (head == nullptr) {
             return nullptr;
@@ -277,6 +285,8 @@ struct BinHeap {
         }
     }
 
+    //Tauscht zwei Entrys miteinander,
+    // wenn die Priorität des gesuchten kleiner ist.
     Entry* bubleup(Entry* e){
         if (e->node->parent != nullptr) {
             if (e->node->entry->prio < e->node->parent->entry->prio) {
@@ -289,12 +299,12 @@ struct BinHeap {
         }
     }
 
-    // PrioritÃ¤t des Eintrags e auf p Ã¤ndern.
+    // Priorität des Eintrags e auf p ändern.
     // Hierbei darf auf keinen Fall ein neues Entry-Objekt entstehen,
-    // selbst wenn die Operation intern als Entfernen und Neu-EinfÃ¼gen
+    // selbst wenn die Operation intern als Entfernen und Neu-Einfügen
     // implementiert wird.
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
-    // oder e nicht zur aktuellen Halde gehÃ¶rt.)
+    // oder e nicht zur aktuellen Halde gehört.)
     bool changePrio (Entry* e, P p) {
         if (e == nullptr || e->node == nullptr) {
             return false;
@@ -317,9 +327,7 @@ struct BinHeap {
 
     // Eintrag e aus der Halde entfernen (aber nicht freigeben).
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
-    // oder e nicht zur aktuellen Halde gehÃ¶rt.)
-    //Ändere die Priorität des Objekts quasi auf unendlich
-    // Führe dann die Operation „Entnehmen“ aus.
+    // oder e nicht zur aktuellen Halde gehört.)
     bool remove (Entry* e){
         if(e == nullptr || contains(e) == false) {
             return false;
@@ -339,6 +347,7 @@ struct BinHeap {
         extractMin();
     }
 
+    // Inhalt der Halde zu Testzwecken ausgeben.
     void dump (){
 
     }

@@ -291,7 +291,7 @@ struct BinHeap {
            // sofern sich das Objekt nicht in einem Blattknoten befindet:
            if(e->node->child == nullptr && e->node->parent != nullptr){
                remove(e);
-               insert(e->p, e->d);
+               insert(e->prio, e->data);
                return true;
            }
        }else{

@@ -70,11 +70,6 @@ int main (int argc, char** argv) {
                 if (echo) cout << " " << entry << " " << prio << endl;
                 heap.changePrio(entrys[entry], prio);
                 break;
-            case '$':
-                cin >> entry;
-                if (echo) cout << " " << entry << endl;
-                heap.contains(entrys[entry]);
-                break;
             case 'q': // quit
                 if (echo) cout << endl;
                 return 0;

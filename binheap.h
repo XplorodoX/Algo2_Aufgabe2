@@ -251,7 +251,65 @@ struct BinHeap {
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
+        Entry* min;
+        Node* del;
+        Node* temp;
+        Node* temp2;
+        BinHeap<P, D> H1;
+        BinHeap<P, D> H2;
 
+
+        min = minimum();
+        del = min->node;
+
+        if(del->child != nullptr){
+
+            temp = del->child->sibling;
+
+            if(del->child == temp){
+
+                del->child->parent = nullptr;
+                del->child->sibling = nullptr;
+
+                if(head != del){
+
+                    H1.head = head;
+                    H2.head = del->child;
+                    Union(H1, H2);
+
+                }
+                else{
+                    head = del->child;
+                }
+
+                return min;
+            }
+            else{
+
+                if(temp != del->child){
+
+                    while(temp != del->child){
+
+                        temp->parent = nullptr;
+                        H1.head = temp;
+                        H2.head = head;
+                        Union(H1, H2);
+                        temp = temp->sibling;
+                    }
+
+
+                }
+            }
+        }
+        else{
+            if(del->sibling != nullptr){
+
+                head = del->sibling;
+            }
+            else{
+                head = nullptr;
+            }
+        }
     }
 
     // Enthält die Halde den Eintrag e?

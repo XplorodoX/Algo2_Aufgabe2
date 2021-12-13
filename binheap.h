@@ -399,46 +399,26 @@ struct BinHeap {
         return true;
     }
 
-    void breitensuche(Node* h){
-        Node* temp2;
-        Node* temp3 = h;
-
-        if(h->child != nullptr){
-            temp2 = temp3->child->sibling;
-            cout << " ";
-            while(temp2 != temp3->child){
-                cout << " " << temp2->entry->prio << " " << temp2->entry->data << endl;
-                if(temp2->child != nullptr){
-                    cout << " ";
-                    cout << " " << temp2->child->entry->prio << " " << temp2->child->entry->data <<endl;
-                }
-                temp2 = temp2->sibling;
-            }
-            cout  << " " << temp3->child->entry->prio << " " << temp3->child->entry->data << endl;
-            if(temp3->child->child != nullptr){
-                cout << " ";
-                temp3 = temp3->child;
-                breitensuche(temp3);
-            }
+    void helpC(Node* node, string s, Node* last){
+        if(node->sibling!= nullptr && last != node->sibling){
+            cout << s << node->entry->prio << " "<< node->entry->data << endl;
+            helpC(node->sibling, s, node);
+        }else if (node->sibling == last && node->child != nullptr){
+            cout << s << node->entry->prio << " " << node->entry->data << endl;
+            helpC(node->child, s, node);
+        }else if(node->sibling == last && node->child == nullptr){
+            cout << s << node->entry->prio << " " << node->entry->data << endl;
         }
     }
 
-    // Inhalt der Halde zu Testzwecken ausgeben.
     void dump (){
-        Node* temp;
-        if(head != nullptr){
-            temp = head;
-            while(temp != nullptr){
-                cout << temp->entry->prio << " " << temp->entry->data << endl;
-                breitensuche(temp);
-
-                if(temp->sibling != nullptr){
-                    temp = temp->sibling;
-                }
-                else{
-                    break;
-                }
+        Node* current = head;
+        while(current != nullptr){
+            cout << current->entry->prio << " " << current->entry->data << endl;
+            if (current->child != nullptr) {
+                helpC(current->child, "  ", current->child);
             }
+            current = current->sibling;
         }
     }
 };

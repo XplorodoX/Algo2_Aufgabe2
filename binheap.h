@@ -400,9 +400,12 @@ struct BinHeap {
     }
 
     void helpC(Node* node, string s, Node* last){
-        if(last != node->sibling){
+        if(last != node->sibling && node->sibling->child == nullptr){
             cout << s << node->sibling->entry->prio << " "<< node->sibling->entry->data << endl;
             helpC(node->sibling, s, last);
+        }else if (last != node->sibling && node->sibling->child != nullptr){
+            cout << s << node->sibling->entry->prio << " "<< node->sibling->entry->data << endl;
+            helpC(node->sibling->child, s + "  ", node->sibling);
         }else if (node->sibling == last && node->sibling->child != nullptr){
             cout << s << node->sibling->entry->prio << " " << node->sibling->entry->data << endl;
             helpC(node->sibling->child, s + "  ", node->sibling->child);

@@ -406,6 +406,7 @@ struct BinHeap {
         }else if (last != node->sibling && node->sibling->child != nullptr){
             cout << s << node->sibling->entry->prio << " "<< node->sibling->entry->data << endl;
             helpC(node->sibling->child, s + "  ", node->sibling->child);
+            helpC(node->sibling, s, last);
         }else if (node->sibling == last && node->sibling->child != nullptr){
             cout << s << node->sibling->entry->prio << " " << node->sibling->entry->data << endl;
             helpC(node->sibling->child, s + "  ", node->sibling->child);

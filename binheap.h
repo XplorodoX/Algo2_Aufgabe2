@@ -251,25 +251,60 @@ struct BinHeap {
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
+
         Entry* min;
         Node* del;
         Node* temp;
         Node* temp2;
         BinHeap<P, D> H1;
         BinHeap<P, D> H2;
+
+
         min = minimum();
         del = min->node;
+
         if(del->child != nullptr){
+
             temp = del->child->sibling;
+
             if(del->child == temp){
+
                 del->child->parent = nullptr;
                 del->child->sibling = nullptr;
-                head = del->child;
+
+                if(head != del){
+
+                    H1.head = head;
+                    H2.head = del->child;
+                    Union(H1, H2);
+
+                }
+                else{
+                    head = del->child;
+                }
+
                 return min;
+            }
+            else{
+
+                if(temp != del->child){
+
+                    while(temp != del->child){
+
+                        temp->parent = nullptr;
+                        H1.head = temp;
+                        H2.head = head;
+                        Union(H1, H2);
+                        temp = temp->sibling;
+                    }
+
+
+                }
             }
         }
         else{
             if(del->sibling != nullptr){
+
                 head = del->sibling;
             }
             else{
@@ -284,7 +319,6 @@ struct BinHeap {
         if (e == nullptr) {
             return false;
         }
-
         if(e == head->entry) {
             return true;
         }else if (e != nullptr){
@@ -350,22 +384,19 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehört.)
     bool remove (Entry* e){
+        P p = minimum()->prio;
         if(e == nullptr || contains(e) == false) {
             return false;
         }
         while(e->node->parent != nullptr){
-            if(e->node->entry->prio < e->node->parent->entry->prio){
-                bubleup(e->node->entry);
-            }else{
-                P p = minimum()->prio;
-                Entry* temp = e->node->parent->entry;
-                e->node->parent->entry = e;
-                e->node->entry = temp;
-                e->node = e->node->parent;
-                e->node->entry->prio = p;
-            }
+            Entry* temp = e->node->parent->entry;
+            e->node->parent->entry = e;
+            e->node->entry = temp;
+            e->node = e->node->parent;
         }
+        e->node->entry->prio = p;
         extractMin();
+        return true;
     }
 
     void breitensuche(Node* h){

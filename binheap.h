@@ -392,17 +392,18 @@ struct BinHeap {
         if (e == nullptr) {
             return false;
         }
-        if(e == head->entry) {
+        Node* tmp = head;
+        if(e == tmp->entry) {
             return true;
         }else if (e != nullptr){
             while(e->node->parent != nullptr){
                 e = e->node->parent->entry;
-                if (e->node->parent == nullptr && head->sibling == nullptr) {
+                if (e->node->parent == nullptr && tmp->sibling == nullptr) {
                     return true;
                 }else{
-                    while (head->sibling != nullptr) {
-                        head = head->sibling;
-                        if (e->node == head) {
+                    while (tmp->sibling != nullptr) {
+                        tmp = tmp->sibling;
+                        if (e->node == tmp) {
                             return true;
                         }
                     }

@@ -1,8 +1,9 @@
-g++ -o main main.cpp
+g++ -o  main.cpp
 
 cat <<- END > binheaptest.in
 	+ a
 	+ b
+
 	+ c
 	+ d
 	+ e

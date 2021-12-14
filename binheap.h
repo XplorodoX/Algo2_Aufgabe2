@@ -247,54 +247,142 @@ struct BinHeap {
         return temp->entry;
     }
 
+    void searchDel(Node* temp, Node* del){
+
+        Node* temp3 = head;
+        BinHeap<P, D> H1;
+        BinHeap<P, D> H2;
+
+        while(temp3->sibling != nullptr){
+
+            if(temp3->sibling == del && del->sibling == nullptr){
+
+                temp3->sibling = nullptr;
+
+                if(temp == del->child){
+
+                    temp->parent = nullptr;
+                    temp->sibling = nullptr;
+                    H1.head = head;
+                    H2.head = temp;
+                    Union(H2, H1);
+                    break;
+                }
+                if(temp != del->child){
+                    SAR(temp, del);
+                    break;
+                }
+
+            }
+
+            if(temp3->sibling == del && del->sibling != nullptr){
+
+                temp3->sibling = del->sibling;
+                del->sibling = nullptr;
+                SAR(temp, del);
+                break;
+            }
+
+            temp3 = temp3->sibling;
+        }
+    }
+
+    void SAR(Node* temp, Node* del){
+
+        Node* temp2;
+        BinHeap<P, D> H1;
+        BinHeap<P, D> H2;
+
+        while(temp != del->child){
+
+            temp2 = temp->sibling;
+            temp->sibling = nullptr;
+            temp->parent = nullptr;
+
+            H1.head = head;
+            H2.head = temp;
+            Union(H2, H1);
+
+            temp = temp2;
+
+            if(temp == del->child){
+
+                temp->sibling = nullptr;
+                temp->parent = nullptr;
+
+                H1.head = head;
+                H2.head = temp;
+                Union(H2,H1);
+                break;
+            }
+
+
+        }
+    }
+
     // Eintrag mit minimaler PrioritÃ¤t liefern
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
+
         Entry* min;
         Node* del;
         Node* temp;
-        Node* temp2;
+        Node* temp3;
         BinHeap<P, D> H1;
         BinHeap<P, D> H2;
-        min = minimum();
-        del = min->node;
 
-        if(del->child != nullptr){
-            temp = del->child->sibling;
-            if(del->child == temp){
-                del->child->parent = nullptr;
-                del->child->sibling = nullptr;
-                if(head != del){
-                    H1.head = head;
-                    H2.head = del->child;
-                    Union(H1, H2);
+        if(head != nullptr){
+            min = minimum();
+            del = min->node;
+            if(del->child != nullptr){
+                temp = del->child->sibling;
+                temp3 = head;
+                if(temp == del->child){
+                    if(head == del && head->sibling == nullptr){
+                        head = del->child;
+                        head->sibling = nullptr;
+                        head->parent = nullptr;
+                    }
+                    if(head == del && head->sibling != nullptr){
+                        head = head->sibling;
+                        H1.head = head;
+                        H2.head = del->child;
+                        Union(H2, H1);
+                    }
+                    if(head != del){
+                        searchDel(temp, del);
+                    }
                 }
                 else{
-                    head = del->child;
-                }
-                return min;
-            }
-            else{
-                if(temp != del->child){
-                    while(temp != del->child){
-                        temp->parent = nullptr;
-                        H1.head = temp;
-                        H2.head = head;
-                        Union(H1, H2);
-                        temp = temp->sibling;
+                    temp3 = head;
+                    temp = del->child->sibling;
+                    if(head == del &&  head->sibling != nullptr){
+                        head = head->sibling;
+                        SAR(temp, del);
+
+                    }
+                    if(head == del && head->sibling == nullptr){
+                        head = nullptr;
+                        SAR(temp, del);
+                    }
+                    if(head != del){
+                        searchDel(temp, del);
                     }
                 }
             }
+            else{
+                if(del->sibling != nullptr){
+                    head = del->sibling;
+                }
+                else{
+                    head = nullptr;
+                }
+            }
+            return min;
         }
         else{
-            if(del->sibling != nullptr){
-
-                head = del->sibling;
-            }
-            else{
-                head = nullptr;
-            }
+            return nullptr;
         }
     }
 

@@ -143,6 +143,7 @@ struct BinHeap {
                 return B1;
             }
         }
+        return B1;
     }
 
     //Merged zwei Biominalheaps
@@ -412,6 +413,7 @@ struct BinHeap {
         }else{
             return false;
         }
+        return false;
     }
 
     //Tauscht zwei Entrys miteinander,
@@ -426,6 +428,7 @@ struct BinHeap {
                 return bubleup(e);
             }
         }
+        return e;
     }
 
     // Priorität des Eintrags e auf p ändern.

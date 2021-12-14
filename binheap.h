@@ -137,7 +137,7 @@ struct BinHeap {
         for(Node* n = B1; n != nullptr; n = n->sibling){
             if(n->sibling != nullptr){
                 continue;
-            } else{
+            }else{
                 n->sibling = B2;
                 B2->sibling = nullptr;
                 return B1;

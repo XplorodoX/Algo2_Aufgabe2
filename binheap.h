@@ -249,19 +249,13 @@ struct BinHeap {
     }
 
     void searchDel(Node* temp, Node* del){
-
         Node* temp3 = head;
         BinHeap<P, D> H1;
         BinHeap<P, D> H2;
-
         while(temp3->sibling != nullptr){
-
             if(temp3->sibling == del && del->sibling == nullptr){
-
                 temp3->sibling = nullptr;
-
                 if(temp == del->child){
-
                     temp->parent = nullptr;
                     temp->sibling = nullptr;
                     H1.head = head;
@@ -273,51 +267,37 @@ struct BinHeap {
                     SAR(temp, del);
                     break;
                 }
-
             }
-
             if(temp3->sibling == del && del->sibling != nullptr){
-
                 temp3->sibling = del->sibling;
                 del->sibling = nullptr;
                 SAR(temp, del);
                 break;
             }
-
             temp3 = temp3->sibling;
         }
     }
 
     void SAR(Node* temp, Node* del){
-
         Node* temp2;
         BinHeap<P, D> H1;
         BinHeap<P, D> H2;
-
         while(temp != del->child){
-
             temp2 = temp->sibling;
             temp->sibling = nullptr;
             temp->parent = nullptr;
-
             H1.head = head;
             H2.head = temp;
             Union(H2, H1);
-
             temp = temp2;
-
             if(temp == del->child){
-
                 temp->sibling = nullptr;
                 temp->parent = nullptr;
-
                 H1.head = head;
                 H2.head = temp;
                 Union(H2,H1);
                 break;
             }
-
-
         }
     }
 
@@ -325,14 +305,12 @@ struct BinHeap {
     // und aus der Halde entfernen (aber nicht freigeben).
     // (Bei einer leeren Halde wirkungslos mit Nullzeiger als Resultatwert.)
     Entry* extractMin (){
-
         Entry* min;
         Node* del;
         Node* temp;
         Node* temp3;
         BinHeap<P, D> H1;
         BinHeap<P, D> H2;
-
         if(head != nullptr){
             min = minimum();
             del = min->node;

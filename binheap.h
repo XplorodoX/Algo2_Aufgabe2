@@ -443,15 +443,14 @@ struct BinHeap {
         if(e == nullptr || contains(e) == false) {
             return false;
         }
-        Entry* min;
-        min = minimum();
+        P p = minimum()->entry->prio;
         while(e->node->parent != nullptr){
             Entry* temp = e->node->parent->entry;
             e->node->parent->entry = e;
             e->node->entry = temp;
             e->node = e->node->parent;
         }
-        e->node->entry->prio = min->prio;
+        e->node->entry->prio = p;
         extractMin();
         return true;
     }

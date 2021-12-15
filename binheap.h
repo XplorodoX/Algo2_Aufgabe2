@@ -216,7 +216,6 @@ struct BinHeap {
 
             k++;
         }
-        delete zwischenspeicher[0], zwischenspeicher[1], zwischenspeicher[2];
         this->head = H;
     }
 

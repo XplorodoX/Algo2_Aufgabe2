@@ -392,6 +392,7 @@ struct BinHeap {
         }else{
             return false;
         }
+        return false;
     }
 
     //Tauscht zwei Entrys miteinander,
@@ -416,7 +417,9 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehört.)
     bool changePrio (Entry* e, P p) {
-
+        if (e == nullptr || !contains(e)) {
+            return false;
+        }
        if(e->node->entry->prio < p){
            if(e->node->child != nullptr){
                D old = e->data;
@@ -441,6 +444,9 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehört.)
     bool remove (Entry* e){
+        if (e == nullptr || !contains(e)) {
+            return false;
+        }
         P p = minimum()->prio;
         while(e->node->parent != nullptr){
             Entry* temp = e->node->parent->entry;

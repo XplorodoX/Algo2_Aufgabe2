@@ -239,12 +239,14 @@ struct BinHeap {
             return head->entry;
         }
         Node* temp = head;
+        Entry* min = head->entry;
         while (temp->sibling != nullptr) {
-            if (temp->sibling->entry->prio < temp->entry->prio) {
-                temp = temp->sibling;
+            if (temp->sibling->entry->prio < min->prio) {
+                min = temp->sibling->entry;
             }
+            temp = temp->sibling;
         }
-        return temp->entry;
+        return min;
     }
 
     void searchDel(Node* temp, Node* del){
@@ -390,7 +392,6 @@ struct BinHeap {
         }else{
             return false;
         }
-        return false;
     }
 
     //Tauscht zwei Entrys miteinander,
@@ -415,12 +416,12 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehört.)
     bool changePrio (Entry* e, P p) {
-        if (e == nullptr || contains(e) == false) {
-            return false;
-        }
+
        if(e->node->entry->prio < p){
            if(e->node->child != nullptr){
+               Entry* old = e;
                remove(e);
+               insert(p, old->data);
                return true;
            }else{
                e->node->entry->prio = p;
@@ -440,10 +441,7 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehört.)
     bool remove (Entry* e){
-        if(e == nullptr || contains(e) == false) {
-            return false;
-        }
-        P p = minimum()->entry->prio;
+        P p = minimum()->prio;
         while(e->node->parent != nullptr){
             Entry* temp = e->node->parent->entry;
             e->node->parent->entry = e;

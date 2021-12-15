@@ -422,7 +422,7 @@ struct BinHeap {
        if(e->node->entry->prio < p){
            if(e->node->child != nullptr){
                remove(e);
-               insert(p, e->node->entry->data);
+               insert(p, e->data);
                return true;
            }
        }else{
@@ -439,17 +439,18 @@ struct BinHeap {
     // (Wirkungslos mit Resultatwert false, wenn e ein Nullzeiger ist
     // oder e nicht zur aktuellen Halde gehört.)
     bool remove (Entry* e){
-        P p = minimum()->prio;
         if(e == nullptr || contains(e) == false) {
             return false;
         }
+        Entry* min;
+        min = minimum();
         while(e->node->parent != nullptr){
             Entry* temp = e->node->parent->entry;
             e->node->parent->entry = e;
             e->node->entry = temp;
             e->node = e->node->parent;
         }
-        e->node->entry->prio = p;
+        e->node->entry->prio = min->prio;
         extractMin();
         return true;
     }

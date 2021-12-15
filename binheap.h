@@ -422,7 +422,9 @@ struct BinHeap {
        if(e->node->entry->prio < p){
            if(e->node->child != nullptr){
                remove(e);
-               insert(p, e->data);
+               return true;
+           }else{
+               e->node->entry->prio = p;
                return true;
            }
        }else{
